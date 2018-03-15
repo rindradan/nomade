@@ -18,4 +18,9 @@ public class TestRestaurantService {
     public void load_data() throws IOException {
         restaurantService.load();
     }
+
+    @Test
+    public void drop_collection() {
+        restaurantService.dropCollection();
+    }
 }

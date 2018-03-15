@@ -1,5 +1,6 @@
 package org.nomade.load.service;
 
+import com.mongodb.client.MongoCollection;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -13,10 +14,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RestaurantService {
+public class RestaurantService extends BaseService {
 
-//    TODO: use resource instead of absolute filepath
-    private static final String ROOT = "C:\\projects\\java\\nomade\\load-data\\src\\test\\resources\\org\\nomade\\load\\service";
+    private static final String ROOT = "C:\\projects\\java\\data\\org.nomade.load-data";
     private static final String CSV_FILENAME = "restaurant_clean.csv";
 
     public void load() throws IOException {
@@ -28,6 +28,7 @@ public class RestaurantService {
                         .withTrim())
         ) {
             Iterable<CSVRecord> csvRecords = csvParser.getRecords();
+            List<Restaurant> restaurants = new ArrayList<>();
 
             for (CSVRecord csvRecord : csvRecords) {
 
@@ -56,12 +57,20 @@ public class RestaurantService {
                 resto.setType(csvRecord.get("type"));
                 resto.setVote(Integer.parseInt(csvRecord.get("votes")));
 
-//                Outputs
-                System.out.println("Record No - " + csvRecord.getRecordNumber());
-                System.out.println("---------------");
-                System.out.println(resto);
+                restaurants.add(resto);
             }
+
+            getCollection().insertMany(restaurants);
+
+            System.out.println(restaurants.size() + "/" + csvParser.getRecordNumber() + " restaurant(s) imported.");
         }
     }
 
+    public void dropCollection() {
+        getCollection().drop();
+    }
+
+    MongoCollection<Restaurant> getCollection() {
+        return getDatabase().getCollection("restaurant", Restaurant.class);
+    }
 }
