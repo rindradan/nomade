@@ -15,6 +15,7 @@ import java.util.List;
 
 public class RestaurantService {
 
+//    TODO: use resource instead of absolute filepath
     private static final String ROOT = "C:\\projects\\java\\nomade\\load-data\\src\\test\\resources\\org\\nomade\\load\\service";
     private static final String CSV_FILENAME = "restaurant_clean.csv";
 
